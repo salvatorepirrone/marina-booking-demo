@@ -55,9 +55,18 @@ a { text-decoration: none; }
       <div id="berth-grid" style="display:grid; grid-template-columns:repeat(8, 1fr); gap:6px; margin-bottom:1rem;"></div>
       <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary);">Seleziona un posto per vedere i dettagli.</div>
     </section>
-
     <section id="view-prenotazioni" style="display:none;">
-      <h3 style="margin-bottom:0.75rem;">Prenotazioni in transito</h3>
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem;">
+        <h3>Luglio 2026</h3>
+        <div style="font-size:12px; color:var(--text-secondary); display:flex; gap:12px;">
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#378ADD;"></i> Confermata</span>
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#BA7517;"></i> Richiesta</span>
+        </div>
+      </div>
+      <div id="cal-weekdays" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:4px;"></div>
+      <div id="cal-grid" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:1rem;"></div>
+      <div id="cal-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; margin-bottom:1rem;"></div>
+      <h3 style="margin-bottom:0.75rem;">Elenco completo</h3>
       <div style="display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
           <div><p style="margin:0; font-size:14px; font-weight:500;">Wind Rose · 11m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto B12 · 4-6 luglio</p></div>
@@ -82,7 +91,6 @@ a { text-decoration: none; }
       <h3 style="margin-bottom:0.75rem;">Richieste diportisti in arrivo</h3>
       <div id="richieste-list" style="display:flex; flex-direction:column; gap:8px;"></div>
     </section>
-
     <section id="view-registro" style="display:none;">
       <h3 style="margin-bottom:0.25rem;">Registro ormeggi</h3>
       <p style="margin:0 0 0.75rem; font-size:12px; color:var(--text-muted);">Numerato automaticamente, conforme al registro richiesto dall'autorita marittima.</p>
@@ -129,7 +137,6 @@ a { text-decoration: none; }
   </div>
 </div>
 </div>
-
 <script>
 const berths = [];
 for (let i = 0; i < 32; i++) {
@@ -177,6 +184,61 @@ function renderRichieste() {
   });
 }
 renderRichieste();
+</script>
+<script>
+const dayBookings = {
+  4: [{ name: "Wind Rose", status: "confermata" }],
+  5: [{ name: "Wind Rose", status: "confermata" }, { name: "Blue Marlin", status: "confermata" }],
+  6: [{ name: "Wind Rose", status: "confermata" }, { name: "Aurora", status: "richiesta" }],
+  7: [{ name: "Aurora", status: "richiesta" }, { name: "Nettuno", status: "confermata" }],
+  8: [{ name: "Aurora", status: "richiesta" }, { name: "Perla Nera", status: "richiesta" }],
+  9: [{ name: "Aurora", status: "richiesta" }, { name: "Perla Nera", status: "richiesta" }, { name: "Stella Marina", status: "richiesta" }],
+  10: [{ name: "Perla Nera", status: "richiesta" }, { name: "Onda Blu", status: "richiesta" }],
+  11: [{ name: "Onda Blu", status: "richiesta" }],
+  12: [{ name: "Onda Blu", status: "richiesta" }],
+  13: [{ name: "Onda Blu", status: "richiesta" }],
+};
+const dayStatusColor = { confermata: "#378ADD", richiesta: "#BA7517" };
+const weekdays = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
+const calWeekdaysEl = document.getElementById("cal-weekdays");
+weekdays.forEach(w => {
+  const el = document.createElement("div");
+  el.style.cssText = "text-align:center; font-size:11px; color:var(--text-muted); padding:2px 0;";
+  el.textContent = w;
+  calWeekdaysEl.appendChild(el);
+});
+const firstWeekday = (new Date(2026, 6, 1).getDay() + 6) % 7;
+const daysInMonth = 31;
+const calGrid = document.getElementById("cal-grid");
+function showDayDetail(day) {
+  document.querySelectorAll(".cal-cell").forEach(c => c.style.outline = "none");
+  const cell = document.getElementById("cal-cell-" + day);
+  if (cell) cell.style.outline = "2px solid var(--text-accent)";
+  const detail = document.getElementById("cal-detail");
+  const items = dayBookings[day];
+  if (!items) {
+    detail.innerHTML = "<strong>" + day + " luglio</strong> &middot; nessuna imbarcazione in porto.";
+    return;
+  }
+  detail.innerHTML = "<strong>" + day + " luglio</strong><br>" + items.map(it =>
+    "<span style='display:inline-flex; align-items:center; gap:4px; margin:6px 8px 0 0;'><i class='ti ti-sailboat' style='font-size:14px; color:" + dayStatusColor[it.status] + ";'></i>" + it.name + " <span style='font-size:11px; color:var(--text-muted);'>(" + it.status + ")</span></span>"
+  ).join("");
+}
+for (let i = 0; i < firstWeekday; i++) {
+  const blank = document.createElement("div");
+  calGrid.appendChild(blank);
+}
+for (let d = 1; d <= daysInMonth; d++) {
+  const cell = document.createElement("div");
+  cell.id = "cal-cell-" + d;
+  cell.className = "cal-cell";
+  cell.style.cssText = "border:0.5px solid var(--border); border-radius:6px; padding:4px; min-height:44px; cursor:pointer; font-size:12px;" + (d === 4 ? " background:var(--bg-accent);" : "");
+  const dots = (dayBookings[d] || []).slice(0, 3).map(it => "<span style='display:inline-block; width:6px; height:6px; border-radius:50%; background:" + dayStatusColor[it.status] + "; margin-right:2px;'></span>").join("");
+  cell.innerHTML = "<div>" + d + "</div><div style='margin-top:4px;'>" + dots + "</div>";
+  cell.onclick = () => showDayDetail(d);
+  calGrid.appendChild(cell);
+}
+showDayDetail(4);
 
 document.querySelectorAll(".nav-btn").forEach(btn => {
   btn.onclick = () => {
