@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestionale Porto - Demo</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<style>
+:root {
+  --surface-1: #F4F3EF; --surface-2: #FFFFFF; --border: #E2E0D8; --border-strong: #C9C6BB;
+  --text-primary: #1A1A18; --text-secondary: #5F5E5A; --text-muted: #8A887F;
+  --bg-accent: #E6F1FB; --text-accent: #0C447C;
+  --bg-success: #EAF3DE; --text-success: #27500A;
+  --bg-warning: #FAEEDA; --text-warning: #633806;
+  --bg-danger: #FCEBEB; --text-danger: #791F1F;
+  --radius: 8px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+body { margin: 0; background: #EDEBE4; padding: 2rem 1rem; }
+h3 { font-size: 16px; font-weight: 500; margin: 0; color: var(--text-primary); }
+button { font-family: inherit; border: 0.5px solid var(--border-strong); background: var(--surface-2); border-radius: var(--radius); cursor: pointer; color: var(--text-primary); }
+button:hover { background: var(--surface-1); }
+a { text-decoration: none; }
+</style>
+</head>
+<body>
+<div style="max-width:760px; margin:0 auto;">
+<p style="font-size:13px; color:var(--text-muted); margin:0 0 12px;">Demo · Gestionale gratuito per porti turistici</p>
+
+<div style="display:flex; gap:0; border:0.5px solid var(--border); border-radius:12px; overflow:hidden; min-height:520px; background:var(--surface-2);">
+  <nav style="width:168px; flex-shrink:0; background:var(--surface-1); border-right:0.5px solid var(--border); padding:0.75rem 0.5rem;">
+    <div style="padding:0.5rem 0.5rem 0.75rem; margin-bottom:0.5rem; border-bottom:0.5px solid var(--border);">
+      <p style="font-weight:500; font-size:14px; margin:0;">Marina Cala Sole</p>
+      <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0;">Gestionale porto</p>
+    </div>
+    <button class="nav-btn" data-view="planimetria" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:var(--bg-accent); color:var(--text-accent); border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-anchor" style="font-size:16px;"></i>Planimetria</button>
+    <button class="nav-btn" data-view="prenotazioni" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-calendar" style="font-size:16px;"></i>Prenotazioni</button>
+    <button class="nav-btn" data-view="richieste" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-bell" style="font-size:16px;"></i>Richieste<span id="req-badge" style="margin-left:auto; background:var(--bg-danger); color:var(--text-danger); font-size:11px; padding:1px 6px; border-radius:10px;">3</span></button>
+    <button class="nav-btn" data-view="registro" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-book" style="font-size:16px;"></i>Registro</button>
+    <button class="nav-btn" data-view="fatturazione" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-receipt" style="font-size:16px;"></i>Fatturazione</button>
+    <button class="nav-btn" data-view="comunicazione" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; border:none;"><i class="ti ti-language" style="font-size:16px;"></i>Comunicazione</button>
+  </nav>
+
+  <div style="flex:1; padding:1.25rem; min-width:0;">
+
+    <section id="view-planimetria">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; flex-wrap:wrap; gap:8px;">
+        <h3>Planimetria posti</h3>
+        <div style="font-size:12px; color:var(--text-secondary); display:flex; gap:12px;">
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#1D9E75;"></i> Libero</span>
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#378ADD;"></i> Occupato</span>
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#BA7517;"></i> In arrivo</span>
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#888780;"></i> Manutenzione</span>
+        </div>
+      </div>
+      <div id="berth-grid" style="display:grid; grid-template-columns:repeat(8, 1fr); gap:6px; margin-bottom:1rem;"></div>
+      <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary);">Seleziona un posto per vedere i dettagli.</div>
+    </section>
+
+    <section id="view-prenotazioni" style="display:none;">
+      <h3 style="margin-bottom:0.75rem;">Prenotazioni in transito</h3>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
+          <div><p style="margin:0; font-size:14px; font-weight:500;">Wind Rose · 11m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto B12 · 4-6 luglio</p></div>
+          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
+          <div><p style="margin:0; font-size:14px; font-weight:500;">Blue Marlin · 9m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto C04 · 5-5 luglio</p></div>
+          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
+          <div><p style="margin:0; font-size:14px; font-weight:500;">Aurora · 14m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto A02 · 6-9 luglio</p></div>
+          <span style="font-size:12px; background:var(--bg-warning); color:var(--text-warning); padding:3px 10px; border-radius:var(--radius);">In attesa acconto</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
+          <div><p style="margin:0; font-size:14px; font-weight:500;">Nettuno · 8m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto D07 · 7-7 luglio</p></div>
+          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-richieste" style="display:none;">
+      <h3 style="margin-bottom:0.75rem;">Richieste diportisti in arrivo</h3>
+      <div id="richieste-list" style="display:flex; flex-direction:column; gap:8px;"></div>
+    </section>
+
+    <section id="view-registro" style="display:none;">
+      <h3 style="margin-bottom:0.25rem;">Registro ormeggi</h3>
+      <p style="margin:0 0 0.75rem; font-size:12px; color:var(--text-muted);">Numerato automaticamente, conforme al registro richiesto dall'autorita marittima.</p>
+      <table style="width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed;">
+        <tr style="border-bottom:0.5px solid var(--border-strong);">
+          <td style="padding:6px 4px; color:var(--text-secondary); width:14%;">N.</td>
+          <td style="padding:6px 4px; color:var(--text-secondary); width:22%;">Data</td>
+          <td style="padding:6px 4px; color:var(--text-secondary);">Imbarcazione</td>
+          <td style="padding:6px 4px; color:var(--text-secondary); width:18%;">Posto</td>
+        </tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0142</td><td style="padding:6px 4px;">01/07</td><td style="padding:6px 4px;">Wind Rose</td><td style="padding:6px 4px;">B12</td></tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0143</td><td style="padding:6px 4px;">02/07</td><td style="padding:6px 4px;">Blue Marlin</td><td style="padding:6px 4px;">C04</td></tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0144</td><td style="padding:6px 4px;">03/07</td><td style="padding:6px 4px;">Nettuno</td><td style="padding:6px 4px;">D07</td></tr>
+        <tr><td style="padding:6px 4px;">0145</td><td style="padding:6px 4px;">04/07</td><td style="padding:6px 4px;">Aurora</td><td style="padding:6px 4px;">A02</td></tr>
+      </table>
+      <button style="margin-top:0.75rem; display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:6px 12px;"><i class="ti ti-download" style="font-size:16px;"></i>Esporta per l'autorita marittima</button>
+    </section>
+
+    <section id="view-fatturazione" style="display:none;">
+      <h3 style="margin-bottom:0.75rem;">Fatturazione e incasso</h3>
+      <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:1rem;">
+        <div style="background:var(--surface-1); border-radius:var(--radius); padding:1rem;"><p style="font-size:13px; color:var(--text-secondary); margin:0 0 4px;">Incassato (luglio)</p><p style="font-size:24px; font-weight:500; margin:0;">4.280 €</p></div>
+        <div style="background:var(--surface-1); border-radius:var(--radius); padding:1rem;"><p style="font-size:13px; color:var(--text-secondary); margin:0 0 4px;">Da incassare</p><p style="font-size:24px; font-weight:500; margin:0;">960 €</p></div>
+        <div style="background:var(--surface-1); border-radius:var(--radius); padding:1rem;"><p style="font-size:13px; color:var(--text-secondary); margin:0 0 4px;">Ricevute emesse</p><p style="font-size:24px; font-weight:500; margin:0;">18</p></div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px; font-size:13px;"><span>Wind Rose · ormeggio + luce/acqua</span><span style="font-weight:500;">210 €</span></div>
+        <div style="display:flex; justify-content:space-between; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px; font-size:13px;"><span>Blue Marlin · ormeggio</span><span style="font-weight:500;">95 €</span></div>
+        <div style="display:flex; justify-content:space-between; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px; font-size:13px;"><span>Aurora · ormeggio (in attesa)</span><span style="color:var(--text-warning); font-weight:500;">480 €</span></div>
+      </div>
+    </section>
+
+    <section id="view-comunicazione" style="display:none;">
+      <h3 style="margin-bottom:0.75rem;">Messaggio al diportista</h3>
+      <div style="display:flex; gap:6px; margin-bottom:0.75rem;">
+        <button class="lang-btn" data-lang="it" style="font-size:13px; padding:6px 14px;">Italiano</button>
+        <button class="lang-btn" data-lang="en" style="font-size:13px; padding:6px 14px;">English</button>
+        <button class="lang-btn" data-lang="fr" style="font-size:13px; padding:6px 14px;">Francais</button>
+        <button class="lang-btn" data-lang="de" style="font-size:13px; padding:6px 14px;">Deutsch</button>
+      </div>
+      <div style="background:var(--surface-1); border-radius:var(--radius); padding:1rem; font-size:14px; line-height:1.6;" id="msg-preview">Ciao, il tuo posto barca B12 e confermato dal 4 al 6 luglio. Ti aspettiamo in porto, buon vento.</div>
+    </section>
+
+  </div>
+</div>
+</div>
+
+<script>
+const berths = [];
+for (let i = 0; i < 32; i++) {
+  const r = Math.random();
+  const status = r < 0.45 ? "libero" : r < 0.75 ? "occupato" : r < 0.9 ? "arrivo" : "manutenzione";
+  berths.push({ id: (i+1).toString().padStart(2,"0"), status });
+}
+const statusColor = { libero: "#1D9E75", occupato: "#378ADD", arrivo: "#BA7517", manutenzione: "#888780" };
+const statusLabel = { libero: "Libero", occupato: "Occupato", arrivo: "In arrivo", manutenzione: "Manutenzione" };
+const grid = document.getElementById("berth-grid");
+berths.forEach(b => {
+  const cell = document.createElement("div");
+  cell.style.cssText = "aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:500; cursor:pointer; color:white; background:" + statusColor[b.status];
+  cell.textContent = b.id;
+  cell.onclick = () => {
+    document.getElementById("berth-detail").innerHTML = "<strong style='color:var(--text-primary);'>Posto " + b.id + "</strong> &middot; " + statusLabel[b.status] + (b.status === "libero" ? " &middot; <a href='#' style='color:var(--text-accent);'>assegna ormeggio</a>" : "");
+  };
+  grid.appendChild(cell);
+});
+
+const richieste = [
+  { nome: "Perla Nera", lung: "10m", periodo: "8-10 luglio" },
+  { nome: "Stella Marina", lung: "7m", periodo: "9-9 luglio" },
+  { nome: "Onda Blu", lung: "12m", periodo: "10-13 luglio" },
+];
+const list = document.getElementById("richieste-list");
+function renderRichieste() {
+  list.innerHTML = "";
+  document.getElementById("req-badge").textContent = richieste.length;
+  if (richieste.length === 0) {
+    list.innerHTML = "<p style='font-size:13px; color:var(--text-muted);'>Nessuna richiesta in sospeso.</p>";
+    return;
+  }
+  richieste.forEach((r, idx) => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;";
+    row.innerHTML = "<div><p style='margin:0; font-size:14px; font-weight:500;'>" + r.nome + " &middot; " + r.lung + "</p><p style='margin:0; font-size:12px; color:var(--text-secondary);'>" + r.periodo + "</p></div><div style='display:flex; gap:6px;'><button data-idx='" + idx + "' class='accept-btn' style='font-size:12px; padding:5px 10px;'>Accetta</button><button data-idx='" + idx + "' class='reject-btn' style='font-size:12px; padding:5px 10px;'>Rifiuta</button></div>";
+    list.appendChild(row);
+  });
+  document.querySelectorAll(".accept-btn, .reject-btn").forEach(btn => {
+    btn.onclick = () => {
+      richieste.splice(parseInt(btn.dataset.idx), 1);
+      renderRichieste();
+    };
+  });
+}
+renderRichieste();
+
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".nav-btn").forEach(b => { b.style.background = "transparent"; b.style.color = "inherit"; });
+    btn.style.background = "var(--bg-accent)"; btn.style.color = "var(--text-accent)";
+    document.querySelectorAll('[id^="view-"]').forEach(v => v.style.display = "none");
+    document.getElementById("view-" + btn.dataset.view).style.display = "block";
+  };
+});
+
+const messages = {
+  it: "Ciao, il tuo posto barca B12 e confermato dal 4 al 6 luglio. Ti aspettiamo in porto, buon vento.",
+  en: "Hi, your berth B12 is confirmed from July 4 to 6. See you at the marina, fair winds.",
+  fr: "Bonjour, votre place B12 est confirmee du 4 au 6 juillet. A bientot au port, bon vent.",
+  de: "Hallo, Ihr Liegeplatz B12 ist vom 4. bis 6. Juli bestatigt. Wir sehen uns im Hafen.",
+};
+document.querySelectorAll(".lang-btn").forEach(btn => {
+  btn.onclick = () => {
+    document.getElementById("msg-preview").textContent = messages[btn.dataset.lang];
+  };
+});
+</script>
+</body>
+</html>
