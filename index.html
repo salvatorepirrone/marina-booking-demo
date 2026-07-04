@@ -29,8 +29,8 @@ a { text-decoration: none; }
 <div style="display:flex; gap:0; border:0.5px solid var(--border); border-radius:12px; overflow:hidden; min-height:520px; background:var(--surface-2);">
   <nav style="width:168px; flex-shrink:0; background:var(--surface-1); border-right:0.5px solid var(--border); padding:0.75rem 0.5rem;">
     <div style="padding:0.5rem 0.5rem 0.75rem; margin-bottom:0.5rem; border-bottom:0.5px solid var(--border);">
-      <p style="font-weight:500; font-size:14px; margin:0;">Marina Cala Sole</p>
-      <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0;">Gestionale porto</p>
+      <p style="font-weight:500; font-size:14px; margin:0;">Porto Piccolo di Pozzallo</p>
+      <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0;">Sicilia (RG) · 49 posti</p>
     </div>
     <button class="nav-btn" data-view="planimetria" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:var(--bg-accent); color:var(--text-accent); border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-anchor" style="font-size:16px;"></i>Planimetria</button>
     <button class="nav-btn" data-view="prenotazioni" style="display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:transparent; border-radius:var(--radius); padding:8px 10px; font-size:13px; margin-bottom:4px; border:none;"><i class="ti ti-calendar" style="font-size:16px;"></i>Prenotazioni</button>
@@ -43,7 +43,7 @@ a { text-decoration: none; }
   <div style="flex:1; padding:1.25rem; min-width:0;">
 
     <section id="view-planimetria">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem; flex-wrap:wrap; gap:8px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem; flex-wrap:wrap; gap:8px;">
         <h3>Planimetria posti</h3>
         <div style="font-size:12px; color:var(--text-secondary); display:flex; gap:12px;">
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#1D9E75;"></i> Libero</span>
@@ -52,8 +52,9 @@ a { text-decoration: none; }
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#888780;"></i> Manutenzione</span>
         </div>
       </div>
-      <div id="berth-grid" style="display:grid; grid-template-columns:repeat(8, 1fr); gap:6px; margin-bottom:1rem;"></div>
-      <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary);">Seleziona un posto per vedere i dettagli.</div>
+      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Zone reali secondo l'ordinanza C.P. n.126/08 della Capitaneria di Porto di Pozzallo · 49 posti assegnati totali</p>
+      <div id="zone-container"></div>
+      <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary); margin-top:0.5rem;">Seleziona un posto per vedere i dettagli.</div>
     </section>
     <section id="view-prenotazioni" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem;">
@@ -138,25 +139,54 @@ a { text-decoration: none; }
 </div>
 </div>
 <script>
-const berths = [];
-for (let i = 0; i < 32; i++) {
-  const r = Math.random();
-  const status = r < 0.45 ? "libero" : r < 0.75 ? "occupato" : r < 0.9 ? "arrivo" : "manutenzione";
-  berths.push({ id: (i+1).toString().padStart(2,"0"), status });
-}
 const statusColor = { libero: "#1D9E75", occupato: "#378ADD", arrivo: "#BA7517", manutenzione: "#888780" };
 const statusLabel = { libero: "Libero", occupato: "Occupato", arrivo: "In arrivo", manutenzione: "Manutenzione" };
-const grid = document.getElementById("berth-grid");
-berths.forEach(b => {
-  const cell = document.createElement("div");
-  cell.style.cssText = "aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:500; cursor:pointer; color:white; background:" + statusColor[b.status];
-  cell.textContent = b.id;
-  cell.onclick = () => {
-    document.getElementById("berth-detail").innerHTML = "<strong style='color:var(--text-primary);'>Posto " + b.id + "</strong> &middot; " + statusLabel[b.status] + (b.status === "libero" ? " &middot; <a href='#' style='color:var(--text-accent);'>assegna ormeggio</a>" : "");
-  };
-  grid.appendChild(cell);
+const zones = [
+  { key: "sottoflutto", nome: "Molo di Sottoflutto e SE", nota: "Pescaggio 3,5 m - imbarcazioni maggiori", count: 14, gestione: true },
+  { key: "zonaA", nome: "Banchina Nord-Ovest - Zona A", nota: "Natanti fino a 7 m f.t., larghezza max 1,80 m", count: 20, gestione: true },
+  { key: "zonaB", nome: "Banchina Nord-Ovest - Zona B (dopo lo scalo di alaggio)", nota: "Solo transito, sosta massima 8 ore", count: 8, gestione: true },
+  { key: "concessione", nome: "Pontili in concessione", nota: "Gestione privata, non assegnati dalla Capitaneria", count: 7, gestione: false },
+];
+const zoneContainer = document.getElementById("zone-container");
+let globalIdx = 1;
+zones.forEach(zone => {
+  const wrap = document.createElement("div");
+  wrap.style.cssText = "margin-bottom:1rem;";
+  const title = document.createElement("div");
+  title.style.cssText = "font-size:12px; font-weight:500; margin-bottom:2px;";
+  title.textContent = zone.nome;
+  const sub = document.createElement("div");
+  sub.style.cssText = "font-size:11px; color:var(--text-muted); margin-bottom:6px;";
+  sub.textContent = zone.nota;
+  const g = document.createElement("div");
+  g.style.cssText = "display:grid; grid-template-columns:repeat(auto-fill, minmax(38px, 1fr)); gap:6px;";
+  for (let i = 0; i < zone.count; i++) {
+    const id = "P" + String(globalIdx).padStart(2, "0");
+    globalIdx++;
+    let status;
+    if (!zone.gestione) {
+      status = "concessione";
+    } else {
+      const r = Math.random();
+      status = r < 0.45 ? "libero" : r < 0.75 ? "occupato" : r < 0.9 ? "arrivo" : "manutenzione";
+    }
+    const cell = document.createElement("div");
+    const bg = status === "concessione" ? "#C9C6BB" : statusColor[status];
+    cell.style.cssText = "aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:500; cursor:pointer; color:white; background:" + bg;
+    cell.textContent = id;
+    cell.onclick = () => {
+      const label = status === "concessione" ? "Gestione privata (non prenotabile dal porto)" : statusLabel[status];
+      document.getElementById("berth-detail").innerHTML = "<strong style='color:var(--text-primary);'>Posto " + id + "</strong> - " + zone.nome + " - " + label + (status === "libero" ? " - <a href='#' style='color:var(--text-accent);'>assegna ormeggio</a>" : "");
+    };
+    g.appendChild(cell);
+  }
+  wrap.appendChild(title);
+  wrap.appendChild(sub);
+  wrap.appendChild(g);
+  zoneContainer.appendChild(wrap);
 });
-
+</script>
+<script>
 const richieste = [
   { nome: "Perla Nera", lung: "10m", periodo: "8-10 luglio" },
   { nome: "Stella Marina", lung: "7m", periodo: "9-9 luglio" },
