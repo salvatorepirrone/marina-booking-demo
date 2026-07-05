@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gestionale Porto - Demo</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/2.44.0/iconfont/tabler-icons.min.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
 :root {
   --surface-1: #F4F3EF; --surface-2: #FFFFFF; --border: #E2E0D8; --border-strong: #C9C6BB;
@@ -52,7 +53,8 @@ a { text-decoration: none; }
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#888780;"></i> Manutenzione</span>
         </div>
       </div>
-      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Zone reali secondo l'ordinanza C.P. n.126/08 della Capitaneria di Porto di Pozzallo · 49 posti assegnati totali</p>
+      <div id="sat-map" style="height:280px; border-radius:8px; overflow:hidden; margin-bottom:6px;"></div>
+      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Foto satellitare reale (Esri/Maxar) del Porto Piccolo di Pozzallo; zone sovrapposte in modo indicativo secondo l'ordinanza C.P. n.126/08. I confini esatti dei singoli posti non sono pubblicati.</p>
       <div id="zone-container"></div>
       <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary); margin-top:0.5rem;">Seleziona un posto per vedere i dettagli.</div>
     </section>
@@ -138,7 +140,28 @@ a { text-decoration: none; }
   </div>
 </div>
 </div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+const map = L.map("sat-map", { zoomControl: false, attributionControl: true }).setView([36.7157, 14.8312], 18);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 20,
+  attribution: "Esri, Maxar, Earthstar Geographics"
+}).addTo(map);
+const zoneMarkers = [
+  { lat: 36.71605, lng: 14.83145, nome: "Molo di Sottoflutto e SE", colore: "#1D9E75" },
+  { lat: 36.71585, lng: 14.83105, nome: "Pontili in concessione", colore: "#C9C6BB" },
+  { lat: 36.71625, lng: 14.83085, nome: "Banchina Nord-Ovest - Zona A", colore: "#378ADD" },
+  { lat: 36.71555, lng: 14.83125, nome: "Banchina Nord-Ovest - Zona B", colore: "#BA7517" }
+];
+zoneMarkers.forEach(z => {
+  const icon = L.divIcon({
+    className: "",
+    html: "<div style='background:" + z.colore + "; width:14px; height:14px; border-radius:50%; border:2px solid white;'></div>",
+    iconSize: [14, 14]
+  });
+  L.marker([z.lat, z.lng], { icon: icon }).addTo(map).bindPopup("<strong>" + z.nome + "</strong>");
+});
+
 const statusColor = { libero: "#1D9E75", occupato: "#378ADD", arrivo: "#BA7517", manutenzione: "#888780" };
 const statusLabel = { libero: "Libero", occupato: "Occupato", arrivo: "In arrivo", manutenzione: "Manutenzione" };
 const zones = [
@@ -276,6 +299,7 @@ document.querySelectorAll(".nav-btn").forEach(btn => {
     btn.style.background = "var(--bg-accent)"; btn.style.color = "var(--text-accent)";
     document.querySelectorAll('[id^="view-"]').forEach(v => v.style.display = "none");
     document.getElementById("view-" + btn.dataset.view).style.display = "block";
+    if (btn.dataset.view === "planimetria") { setTimeout(() => map.invalidateSize(), 50); }
   };
 });
 
