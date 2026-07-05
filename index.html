@@ -204,9 +204,12 @@ function getDayBoats(day) {
 }
 </script>
 <script>
-const PX_PER_M = 2.3;
-function boatIcon(lengthM, angleDeg, color, faded) {
-  const len = Math.max(14, Math.round(lengthM * PX_PER_M));
+function metersPerPixelAtZoom(zoom, lat) {
+  return 156543.03392 * Math.cos(lat * Math.PI / 180) / Math.pow(2, zoom);
+}
+const VISUAL_BOOST = 1.1;
+function boatIcon(lengthM, angleDeg, color, faded, pxPerM) {
+  const len = Math.max(14, Math.round(lengthM * pxPerM));
   const beam = Math.max(6, Math.round(len * 0.34));
   const S = Math.ceil(len * 1.05) + 2;
   const cx = S / 2, cy = S / 2;
@@ -227,12 +230,14 @@ function boatIcon(lengthM, angleDeg, color, faded) {
   return L.divIcon({ className: "boat-icon", html: html, iconSize: [S, S], iconAnchor: [cx, cy] });
 }
 
-function iconForBerthDay(b, day) {
+function iconForBerthDay(b, day, map) {
   const info = statusForDay(b.id, day);
   const color = STATUS_COLOR[info.status];
   const faded = (info.status === "libero" || info.status === "manutenzione" || info.status === "concessione");
   const lengthM = info.length || (b.slipLength * 0.62);
-  return boatIcon(lengthM, b.angle, color, faded);
+  const mpp = metersPerPixelAtZoom(map.getZoom(), b.lat);
+  const pxPerM = VISUAL_BOOST / mpp;
+  return boatIcon(lengthM, b.angle, color, faded, pxPerM);
 }
 
 function berthBounds() {
@@ -246,14 +251,19 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
   attribution: "Esri, Maxar, Earthstar Geographics"
 }).addTo(map1);
 map1.fitBounds(berthBounds(), { padding: [26, 26] });
+let planDay = 4;
 const map1Markers = {};
 BERTHS.forEach(b => {
-  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4) }).addTo(map1);
+  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4, map1) }).addTo(map1);
   marker.on("click", () => selectBerthPlanimetria(b.id));
   map1Markers[b.id] = marker;
 });
+map1.on("zoomend", () => {
+  BERTHS.forEach(b => { map1Markers[b.id].setIcon(iconForBerthDay(b, planDay, map1)); });
+});
 
 function renderZoneGrid(day) {
+  planDay = day;
   const zoneContainer = document.getElementById("zone-container");
   zoneContainer.innerHTML = "";
   ZONES.forEach(zone => {
@@ -282,7 +292,7 @@ function renderZoneGrid(day) {
     zoneContainer.appendChild(wrap);
   });
   BERTHS.forEach(b => {
-    map1Markers[b.id].setIcon(iconForBerthDay(b, day));
+    map1Markers[b.id].setIcon(iconForBerthDay(b, day, map1));
   });
 }
 
@@ -317,9 +327,13 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
 map2.fitBounds(berthBounds(), { padding: [16, 16] });
 const map2Markers = {};
 BERTHS.forEach(b => {
-  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4) }).addTo(map2);
+  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4, map2) }).addTo(map2);
   map2Markers[b.id] = marker;
   marker.bindTooltip(b.id, { permanent: false });
+});
+map2.on("zoomend", () => {
+  const day = (typeof currentDay !== "undefined") ? currentDay : 4;
+  BERTHS.forEach(b => { map2Markers[b.id].setIcon(iconForBerthDay(b, day, map2)); });
 });
 
 function renderPrenotazioniList() {
@@ -353,7 +367,7 @@ function showDayDetail(day) {
   const nonLibero = [];
   BERTHS.forEach(b => {
     const info = statusForDay(b.id, day);
-    map2Markers[b.id].setIcon(iconForBerthDay(b, day));
+    map2Markers[b.id].setIcon(iconForBerthDay(b, day, map2));
     if (info.status !== "libero" && info.status !== "concessione") {
       nonLibero.push(b.id + (info.boat ? " (" + info.boat + ")" : " (" + STATUS_LABEL[info.status] + ")"));
     }
