@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 
 <html lang="it">
 <head>
@@ -217,6 +217,20 @@ ZONES.forEach(z => {
   }
 });
 ["P11", "P22", "P39"].forEach(id => { const b = BERTHS.find(x => x.id === id); if (b) b.structural = "manutenzione"; });
+
+const CONCESSIONE_POS = {
+  P43: [36.715093, 14.831672],
+  P44: [36.715168, 14.831900],
+  P45: [36.714996, 14.831900],
+  P46: [36.714598, 14.832423],
+  P47: [36.714362, 14.832275],
+  P48: [36.714125, 14.832248],
+  P49: [36.713888, 14.832342]
+};
+Object.keys(CONCESSIONE_POS).forEach(id => {
+  const b = BERTHS.find(x => x.id === id);
+  if (b) { b.lat = CONCESSIONE_POS[id][0]; b.lng = CONCESSIONE_POS[id][1]; }
+});
 
 const BERTH_OVERRIDES_KEY = "marinaBerthOverrides_v1";
 function loadBerthOverrides() {
