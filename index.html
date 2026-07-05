@@ -183,13 +183,13 @@ function offsetLL(ll, bearingDeg, meters) {
 
 const ZONES = [
   { key: "sottoflutto", nome: "Molo di Sottoflutto e SE", nota: "Pescaggio 3,5 m - imbarcazioni maggiori", maxLength: 18, width: 4.5, maxDraft: 3.5,
-    line: [[36.71755, 14.831382], [36.717077, 14.832079]], count: 14, sides: 1, offsetM: 3 },
+    line: [[36.716632, 14.831007], [36.715978, 14.832297]], count: 14, sides: 1, offsetM: 3 },
   { key: "zonaA", nome: "Banchina Nord-Ovest - Zona A", nota: "Natanti fino a 7 m f.t., larghezza max 1,80 m", maxLength: 7, width: 1.8, maxDraft: 1.5,
-    line: [[36.716819, 14.831865], [36.71583, 14.831918]], count: 20, sides: 2, offsetM: 4 },
+    line: [[36.716043, 14.831921], [36.715452, 14.831894]], count: 20, sides: 2, offsetM: 4 },
   { key: "zonaB", nome: "Banchina Nord-Ovest - Zona B (dopo lo scalo di alaggio)", nota: "Solo transito, sosta massima 8 ore", maxLength: 10, width: 3, maxDraft: 2,
-    line: [[36.715658, 14.831682], [36.714798, 14.83179]], count: 8, sides: 2, offsetM: 5 },
+    line: [[36.715452, 14.831894], [36.714957, 14.831774]], count: 8, sides: 2, offsetM: 4.5 },
   { key: "concessione", nome: "Pontili in concessione", nota: "Gestione privata, non assegnati dalla Capitaneria", maxLength: null, width: 3, maxDraft: 2,
-    line: [[36.714669, 14.831597], [36.714153, 14.831918]], count: 7, sides: 1, offsetM: 3 },
+    line: [[36.714832, 14.832203], [36.714123, 14.832251]], count: 7, sides: 1, offsetM: 2 },
 ];
 ZONES.forEach(z => { z.bearing = bearingOf(z.line[0], z.line[1]); });
 
