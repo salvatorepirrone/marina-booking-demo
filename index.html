@@ -21,6 +21,8 @@ h3 { font-size: 16px; font-weight: 500; margin: 0; color: var(--text-primary); }
 button { font-family: inherit; border: 0.5px solid var(--border-strong); background: var(--surface-2); border-radius: var(--radius); cursor: pointer; color: var(--text-primary); }
 button:hover { background: var(--surface-1); }
 a { text-decoration: none; }
+.leaflet-div-icon { background: transparent; border: none; }
+.boat-icon { background: transparent !important; border: none !important; }
 </style>
 </head>
 <body>
@@ -54,7 +56,7 @@ a { text-decoration: none; }
         </div>
       </div>
       <div id="sat-map" style="height:280px; border-radius:8px; overflow:hidden; margin-bottom:6px;"></div>
-      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Foto satellitare reale (Esri/Maxar); ogni posto (P01-P49) e posizionato in modo indicativo secondo le zone dell'ordinanza C.P. n.126/08. Stato mostrato: oggi, 4 luglio.</p>
+      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Foto satellitare reale (Esri/Maxar); ogni posto (P01-P49) e posizionato in modo indicativo secondo le zone dell'ordinanza C.P. n.126/08 ed e rappresentato con una sagoma stilizzata di imbarcazione, orientata secondo il pontile/banchina e proporzionale alla lunghezza. Stato mostrato: oggi, 4 luglio.</p>
       <div id="zone-container"></div>
       <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary); margin-top:0.5rem;">Seleziona un posto per vedere i dettagli.</div>
     </section>
@@ -96,7 +98,6 @@ a { text-decoration: none; }
       </table>
       <button style="margin-top:0.75rem; display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:6px 12px;"><i class="ti ti-download" style="font-size:16px;"></i>Esporta per l'autorita marittima</button>
     </section>
-
     <section id="view-fatturazione" style="display:none;">
       <h3 style="margin-bottom:0.75rem;">Fatturazione e incasso</h3>
       <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:1rem;">
@@ -134,6 +135,11 @@ const ZONES = [
   { key: "concessione", nome: "Pontili in concessione", nota: "Gestione privata, non assegnati dalla Capitaneria", count: 7, maxLength: null, base: [36.71590, 14.83095], step: [0.00004, -0.00003] },
 ];
 
+ZONES.forEach(z => {
+  const brg = Math.atan2(z.step[1], z.step[0]) * 180 / Math.PI;
+  z.bearing = (z.key === "zonaA" || z.key === "zonaB") ? brg + 90 : brg;
+});
+
 const BERTHS = [];
 let bIdx = 1;
 ZONES.forEach(z => {
@@ -142,6 +148,7 @@ ZONES.forEach(z => {
       id: "P" + String(bIdx).padStart(2, "0"),
       zone: z.key, zoneNome: z.nome, maxLength: z.maxLength,
       lat: z.base[0] + i * z.step[0], lng: z.base[1] + i * z.step[1],
+      angle: z.bearing, slipLength: z.maxLength || 10,
       structural: z.key === "concessione" ? "concessione" : null
     });
     bIdx++;
@@ -180,6 +187,37 @@ function getDayBoats(day) {
   PENDING.forEach(p => { if (day >= p.start && day <= p.end) out.push({ name: p.boat, status: "richiesta" }); });
   return out;
 }
+
+const PX_PER_M = 2.3;
+function boatIcon(lengthM, angleDeg, color, faded) {
+  const len = Math.max(14, Math.round(lengthM * PX_PER_M));
+  const beam = Math.max(6, Math.round(len * 0.34));
+  const S = Math.ceil(len * 1.05) + 2;
+  const cx = S / 2, cy = S / 2;
+  const top = cy - len / 2, bottom = cy + len / 2;
+  const left = cx - beam / 2, right = cx + beam / 2;
+  const fillOp = faded ? 0.16 : 0.55;
+  const strokeOp = faded ? 0.55 : 0.95;
+  const dash = faded ? ' stroke-dasharray="3,2"' : "";
+  const path = "M " + cx + " " + top +
+    " C " + right + " " + (top + len * 0.30) + ", " + right + " " + (bottom - len * 0.14) + ", " + right + " " + (bottom - 3) +
+    " Q " + right + " " + bottom + ", " + cx + " " + bottom +
+    " Q " + left + " " + bottom + ", " + left + " " + (bottom - 3) +
+    " C " + left + " " + (bottom - len * 0.14) + ", " + left + " " + (top + len * 0.30) + ", " + cx + " " + top + " Z";
+  const html = '<svg width="' + S + '" height="' + S + '" viewBox="0 0 ' + S + ' ' + S + '" style="overflow:visible;">' +
+    '<g transform="rotate(' + angleDeg + ' ' + cx + ' ' + cy + ')">' +
+    '<path d="' + path + '" fill="' + color + '" fill-opacity="' + fillOp + '" stroke="' + color + '" stroke-opacity="' + strokeOp + '" stroke-width="1.4"' + dash + '/>' +
+    "</g></svg>";
+  return L.divIcon({ className: "boat-icon", html: html, iconSize: [S, S], iconAnchor: [cx, cy] });
+}
+
+function iconForBerthDay(b, day) {
+  const info = statusForDay(b.id, day);
+  const color = STATUS_COLOR[info.status];
+  const faded = (info.status === "libero" || info.status === "manutenzione" || info.status === "concessione");
+  const lengthM = info.length || (b.slipLength * 0.62);
+  return boatIcon(lengthM, b.angle, color, faded);
+}
 </script>
 <script>
 const map1 = L.map("sat-map", { zoomControl: false, attributionControl: true }).setView([36.7159, 14.8312], 18);
@@ -189,7 +227,7 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
 }).addTo(map1);
 const map1Markers = {};
 BERTHS.forEach(b => {
-  const marker = L.circleMarker([b.lat, b.lng], { radius: 6, weight: 1, color: "#fff", fillOpacity: 1 }).addTo(map1);
+  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4) }).addTo(map1);
   marker.on("click", () => selectBerthPlanimetria(b.id));
   map1Markers[b.id] = marker;
 });
@@ -223,8 +261,7 @@ function renderZoneGrid(day) {
     zoneContainer.appendChild(wrap);
   });
   BERTHS.forEach(b => {
-    const info = statusForDay(b.id, day);
-    map1Markers[b.id].setStyle({ fillColor: STATUS_COLOR[info.status] });
+    map1Markers[b.id].setIcon(iconForBerthDay(b, day));
   });
 }
 
@@ -258,7 +295,7 @@ L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/
 }).addTo(map2);
 const map2Markers = {};
 BERTHS.forEach(b => {
-  const marker = L.circleMarker([b.lat, b.lng], { radius: 6, weight: 1, color: "#fff", fillOpacity: 1 }).addTo(map2);
+  const marker = L.marker([b.lat, b.lng], { icon: iconForBerthDay(b, 4) }).addTo(map2);
   map2Markers[b.id] = marker;
   marker.bindTooltip(b.id, { permanent: false });
 });
@@ -294,7 +331,7 @@ function showDayDetail(day) {
   const nonLibero = [];
   BERTHS.forEach(b => {
     const info = statusForDay(b.id, day);
-    map2Markers[b.id].setStyle({ fillColor: STATUS_COLOR[info.status] });
+    map2Markers[b.id].setIcon(iconForBerthDay(b, day));
     if (info.status !== "libero" && info.status !== "concessione") {
       nonLibero.push(b.id + (info.boat ? " (" + info.boat + ")" : " (" + STATUS_LABEL[info.status] + ")"));
     }
