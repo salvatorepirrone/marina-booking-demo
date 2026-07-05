@@ -46,48 +46,33 @@ a { text-decoration: none; }
     <section id="view-planimetria">
       <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.5rem; flex-wrap:wrap; gap:8px;">
         <h3>Planimetria posti</h3>
-        <div style="font-size:12px; color:var(--text-secondary); display:flex; gap:12px;">
+        <div style="font-size:11px; color:var(--text-secondary); display:flex; gap:10px; flex-wrap:wrap;">
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#1D9E75;"></i> Libero</span>
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#378ADD;"></i> Occupato</span>
-          <span><i class="ti ti-square-filled" style="font-size:10px; color:#BA7517;"></i> In arrivo</span>
+          <span><i class="ti ti-square-filled" style="font-size:10px; color:#BA7517;"></i> Richiesta/attesa</span>
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#888780;"></i> Manutenzione</span>
         </div>
       </div>
       <div id="sat-map" style="height:280px; border-radius:8px; overflow:hidden; margin-bottom:6px;"></div>
-      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Foto satellitare reale (Esri/Maxar) del Porto Piccolo di Pozzallo; zone sovrapposte in modo indicativo secondo l'ordinanza C.P. n.126/08. I confini esatti dei singoli posti non sono pubblicati.</p>
+      <p style="font-size:11px; color:var(--text-muted); margin:0 0 1rem;">Foto satellitare reale (Esri/Maxar); ogni posto (P01-P49) e posizionato in modo indicativo secondo le zone dell'ordinanza C.P. n.126/08. Stato mostrato: oggi, 4 luglio.</p>
       <div id="zone-container"></div>
       <div id="berth-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; color:var(--text-secondary); margin-top:0.5rem;">Seleziona un posto per vedere i dettagli.</div>
     </section>
     <section id="view-prenotazioni" style="display:none;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:0.75rem;">
         <h3>Luglio 2026</h3>
-        <div style="font-size:12px; color:var(--text-secondary); display:flex; gap:12px;">
+        <div style="font-size:11px; color:var(--text-secondary); display:flex; gap:10px;">
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#378ADD;"></i> Confermata</span>
           <span><i class="ti ti-square-filled" style="font-size:10px; color:#BA7517;"></i> Richiesta</span>
         </div>
       </div>
       <div id="cal-weekdays" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:4px;"></div>
       <div id="cal-grid" style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px; margin-bottom:1rem;"></div>
-      <div id="cal-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; margin-bottom:1rem;"></div>
+      <div id="cal-detail" style="background:var(--surface-1); border-radius:var(--radius); padding:0.75rem 1rem; font-size:13px; margin-bottom:0.75rem;"></div>
+      <div id="cal-map" style="height:220px; border-radius:8px; overflow:hidden; margin-bottom:6px;"></div>
+      <div id="cal-day-berths" style="font-size:12px; color:var(--text-secondary); margin-bottom:1rem;"></div>
       <h3 style="margin-bottom:0.75rem;">Elenco completo</h3>
-      <div style="display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
-          <div><p style="margin:0; font-size:14px; font-weight:500;">Wind Rose · 11m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto B12 · 4-6 luglio</p></div>
-          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
-          <div><p style="margin:0; font-size:14px; font-weight:500;">Blue Marlin · 9m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto C04 · 5-5 luglio</p></div>
-          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
-          <div><p style="margin:0; font-size:14px; font-weight:500;">Aurora · 14m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto A02 · 6-9 luglio</p></div>
-          <span style="font-size:12px; background:var(--bg-warning); color:var(--text-warning); padding:3px 10px; border-radius:var(--radius);">In attesa acconto</span>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;">
-          <div><p style="margin:0; font-size:14px; font-weight:500;">Nettuno · 8m</p><p style="margin:0; font-size:12px; color:var(--text-secondary);">Posto D07 · 7-7 luglio</p></div>
-          <span style="font-size:12px; background:var(--bg-success); color:var(--text-success); padding:3px 10px; border-radius:var(--radius);">Confermata</span>
-        </div>
-      </div>
+      <div id="prenotazioni-list" style="display:flex; flex-direction:column; gap:6px;"></div>
     </section>
 
     <section id="view-richieste" style="display:none;">
@@ -104,10 +89,10 @@ a { text-decoration: none; }
           <td style="padding:6px 4px; color:var(--text-secondary);">Imbarcazione</td>
           <td style="padding:6px 4px; color:var(--text-secondary); width:18%;">Posto</td>
         </tr>
-        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0142</td><td style="padding:6px 4px;">01/07</td><td style="padding:6px 4px;">Wind Rose</td><td style="padding:6px 4px;">B12</td></tr>
-        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0143</td><td style="padding:6px 4px;">02/07</td><td style="padding:6px 4px;">Blue Marlin</td><td style="padding:6px 4px;">C04</td></tr>
-        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0144</td><td style="padding:6px 4px;">03/07</td><td style="padding:6px 4px;">Nettuno</td><td style="padding:6px 4px;">D07</td></tr>
-        <tr><td style="padding:6px 4px;">0145</td><td style="padding:6px 4px;">04/07</td><td style="padding:6px 4px;">Aurora</td><td style="padding:6px 4px;">A02</td></tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0142</td><td style="padding:6px 4px;">01/07</td><td style="padding:6px 4px;">Wind Rose</td><td style="padding:6px 4px;">P02</td></tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0143</td><td style="padding:6px 4px;">02/07</td><td style="padding:6px 4px;">Blue Marlin</td><td style="padding:6px 4px;">P36</td></tr>
+        <tr style="border-bottom:0.5px solid var(--border);"><td style="padding:6px 4px;">0144</td><td style="padding:6px 4px;">03/07</td><td style="padding:6px 4px;">Nettuno</td><td style="padding:6px 4px;">P08</td></tr>
+        <tr><td style="padding:6px 4px;">0145</td><td style="padding:6px 4px;">04/07</td><td style="padding:6px 4px;">Aurora</td><td style="padding:6px 4px;">P05</td></tr>
       </table>
       <button style="margin-top:0.75rem; display:inline-flex; align-items:center; gap:6px; font-size:13px; padding:6px 12px;"><i class="ti ti-download" style="font-size:16px;"></i>Esporta per l'autorita marittima</button>
     </section>
@@ -142,116 +127,118 @@ a { text-decoration: none; }
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map = L.map("sat-map", { zoomControl: false, attributionControl: true }).setView([36.7157, 14.8312], 18);
+const ZONES = [
+  { key: "sottoflutto", nome: "Molo di Sottoflutto e SE", nota: "Pescaggio 3,5 m - imbarcazioni maggiori", count: 14, maxLength: 18, base: [36.71600, 14.83160], step: [-0.00006, -0.00002] },
+  { key: "zonaA", nome: "Banchina Nord-Ovest - Zona A", nota: "Natanti fino a 7 m f.t., larghezza max 1,80 m", count: 20, maxLength: 7, base: [36.71630, 14.83070], step: [0.00002, 0.00008] },
+  { key: "zonaB", nome: "Banchina Nord-Ovest - Zona B (dopo lo scalo di alaggio)", nota: "Solo transito, sosta massima 8 ore", count: 8, maxLength: 10, base: [36.71560, 14.83100], step: [0.00003, 0.00006] },
+  { key: "concessione", nome: "Pontili in concessione", nota: "Gestione privata, non assegnati dalla Capitaneria", count: 7, maxLength: null, base: [36.71590, 14.83095], step: [0.00004, -0.00003] },
+];
+
+const BERTHS = [];
+let bIdx = 1;
+ZONES.forEach(z => {
+  for (let i = 0; i < z.count; i++) {
+    BERTHS.push({
+      id: "P" + String(bIdx).padStart(2, "0"),
+      zone: z.key, zoneNome: z.nome, maxLength: z.maxLength,
+      lat: z.base[0] + i * z.step[0], lng: z.base[1] + i * z.step[1],
+      structural: z.key === "concessione" ? "concessione" : null
+    });
+    bIdx++;
+  }
+});
+["P11", "P22", "P39"].forEach(id => { const b = BERTHS.find(x => x.id === id); if (b) b.structural = "manutenzione"; });
+
+const CONFIRMED = [
+  { boat: "Wind Rose", length: 11, berth: "P02", start: 4, end: 6, status: "occupato" },
+  { boat: "Blue Marlin", length: 9, berth: "P36", start: 5, end: 5, status: "occupato" },
+  { boat: "Aurora", length: 14, berth: "P05", start: 6, end: 9, status: "attesa" },
+  { boat: "Nettuno", length: 8, berth: "P08", start: 7, end: 7, status: "occupato" },
+];
+const PENDING = [
+  { boat: "Perla Nera", length: 10, berth: "P10", start: 8, end: 10 },
+  { boat: "Stella Marina", length: 7, berth: "P18", start: 9, end: 9 },
+  { boat: "Onda Blu", length: 12, berth: "P12", start: 10, end: 13 },
+];
+
+const STATUS_COLOR = { libero: "#1D9E75", occupato: "#378ADD", richiesta: "#BA7517", attesa: "#BA7517", manutenzione: "#888780", concessione: "#C9C6BB" };
+const STATUS_LABEL = { libero: "Libero", occupato: "Occupato", richiesta: "Richiesta", attesa: "In attesa acconto", manutenzione: "Manutenzione", concessione: "Concessione privata" };
+
+function statusForDay(berthId, day) {
+  const b = BERTHS.find(x => x.id === berthId);
+  if (b && b.structural) return { status: b.structural };
+  const conf = CONFIRMED.find(c => c.berth === berthId && day >= c.start && day <= c.end);
+  if (conf) return { status: conf.status, boat: conf.boat, length: conf.length };
+  const pend = PENDING.find(c => c.berth === berthId && day >= c.start && day <= c.end);
+  if (pend) return { status: "richiesta", boat: pend.boat, length: pend.length };
+  return { status: "libero" };
+}
+
+function getDayBoats(day) {
+  const out = [];
+  CONFIRMED.forEach(c => { if (day >= c.start && day <= c.end) out.push({ name: c.boat, status: c.status === "attesa" ? "richiesta" : "confermata" }); });
+  PENDING.forEach(p => { if (day >= p.start && day <= p.end) out.push({ name: p.boat, status: "richiesta" }); });
+  return out;
+}
+</script>
+<script>
+const map1 = L.map("sat-map", { zoomControl: false, attributionControl: true }).setView([36.7159, 14.8312], 18);
 L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
   maxZoom: 20,
   attribution: "Esri, Maxar, Earthstar Geographics"
-}).addTo(map);
-const zoneMarkers = [
-  { lat: 36.71605, lng: 14.83145, nome: "Molo di Sottoflutto e SE", colore: "#1D9E75" },
-  { lat: 36.71585, lng: 14.83105, nome: "Pontili in concessione", colore: "#C9C6BB" },
-  { lat: 36.71625, lng: 14.83085, nome: "Banchina Nord-Ovest - Zona A", colore: "#378ADD" },
-  { lat: 36.71555, lng: 14.83125, nome: "Banchina Nord-Ovest - Zona B", colore: "#BA7517" }
-];
-zoneMarkers.forEach(z => {
-  const icon = L.divIcon({
-    className: "",
-    html: "<div style='background:" + z.colore + "; width:14px; height:14px; border-radius:50%; border:2px solid white;'></div>",
-    iconSize: [14, 14]
-  });
-  L.marker([z.lat, z.lng], { icon: icon }).addTo(map).bindPopup("<strong>" + z.nome + "</strong>");
+}).addTo(map1);
+const map1Markers = {};
+BERTHS.forEach(b => {
+  const marker = L.circleMarker([b.lat, b.lng], { radius: 6, weight: 1, color: "#fff", fillOpacity: 1 }).addTo(map1);
+  marker.on("click", () => selectBerthPlanimetria(b.id));
+  map1Markers[b.id] = marker;
 });
 
-const statusColor = { libero: "#1D9E75", occupato: "#378ADD", arrivo: "#BA7517", manutenzione: "#888780" };
-const statusLabel = { libero: "Libero", occupato: "Occupato", arrivo: "In arrivo", manutenzione: "Manutenzione" };
-const zones = [
-  { key: "sottoflutto", nome: "Molo di Sottoflutto e SE", nota: "Pescaggio 3,5 m - imbarcazioni maggiori", count: 14, gestione: true },
-  { key: "zonaA", nome: "Banchina Nord-Ovest - Zona A", nota: "Natanti fino a 7 m f.t., larghezza max 1,80 m", count: 20, gestione: true },
-  { key: "zonaB", nome: "Banchina Nord-Ovest - Zona B (dopo lo scalo di alaggio)", nota: "Solo transito, sosta massima 8 ore", count: 8, gestione: true },
-  { key: "concessione", nome: "Pontili in concessione", nota: "Gestione privata, non assegnati dalla Capitaneria", count: 7, gestione: false },
-];
-const zoneContainer = document.getElementById("zone-container");
-let globalIdx = 1;
-zones.forEach(zone => {
-  const wrap = document.createElement("div");
-  wrap.style.cssText = "margin-bottom:1rem;";
-  const title = document.createElement("div");
-  title.style.cssText = "font-size:12px; font-weight:500; margin-bottom:2px;";
-  title.textContent = zone.nome;
-  const sub = document.createElement("div");
-  sub.style.cssText = "font-size:11px; color:var(--text-muted); margin-bottom:6px;";
-  sub.textContent = zone.nota;
-  const g = document.createElement("div");
-  g.style.cssText = "display:grid; grid-template-columns:repeat(auto-fill, minmax(38px, 1fr)); gap:6px;";
-  for (let i = 0; i < zone.count; i++) {
-    const id = "P" + String(globalIdx).padStart(2, "0");
-    globalIdx++;
-    let status;
-    if (!zone.gestione) {
-      status = "concessione";
-    } else {
-      const r = Math.random();
-      status = r < 0.45 ? "libero" : r < 0.75 ? "occupato" : r < 0.9 ? "arrivo" : "manutenzione";
-    }
-    const cell = document.createElement("div");
-    const bg = status === "concessione" ? "#C9C6BB" : statusColor[status];
-    cell.style.cssText = "aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:500; cursor:pointer; color:white; background:" + bg;
-    cell.textContent = id;
-    cell.onclick = () => {
-      const label = status === "concessione" ? "Gestione privata (non prenotabile dal porto)" : statusLabel[status];
-      document.getElementById("berth-detail").innerHTML = "<strong style='color:var(--text-primary);'>Posto " + id + "</strong> - " + zone.nome + " - " + label + (status === "libero" ? " - <a href='#' style='color:var(--text-accent);'>assegna ormeggio</a>" : "");
-    };
-    g.appendChild(cell);
-  }
-  wrap.appendChild(title);
-  wrap.appendChild(sub);
-  wrap.appendChild(g);
-  zoneContainer.appendChild(wrap);
-});
-</script>
-<script>
-const richieste = [
-  { nome: "Perla Nera", lung: "10m", periodo: "8-10 luglio" },
-  { nome: "Stella Marina", lung: "7m", periodo: "9-9 luglio" },
-  { nome: "Onda Blu", lung: "12m", periodo: "10-13 luglio" },
-];
-const list = document.getElementById("richieste-list");
-function renderRichieste() {
-  list.innerHTML = "";
-  document.getElementById("req-badge").textContent = richieste.length;
-  if (richieste.length === 0) {
-    list.innerHTML = "<p style='font-size:13px; color:var(--text-muted);'>Nessuna richiesta in sospeso.</p>";
-    return;
-  }
-  richieste.forEach((r, idx) => {
-    const row = document.createElement("div");
-    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;";
-    row.innerHTML = "<div><p style='margin:0; font-size:14px; font-weight:500;'>" + r.nome + " &middot; " + r.lung + "</p><p style='margin:0; font-size:12px; color:var(--text-secondary);'>" + r.periodo + "</p></div><div style='display:flex; gap:6px;'><button data-idx='" + idx + "' class='accept-btn' style='font-size:12px; padding:5px 10px;'>Accetta</button><button data-idx='" + idx + "' class='reject-btn' style='font-size:12px; padding:5px 10px;'>Rifiuta</button></div>";
-    list.appendChild(row);
+function renderZoneGrid(day) {
+  const zoneContainer = document.getElementById("zone-container");
+  zoneContainer.innerHTML = "";
+  ZONES.forEach(zone => {
+    const wrap = document.createElement("div");
+    wrap.style.cssText = "margin-bottom:1rem;";
+    const title = document.createElement("div");
+    title.style.cssText = "font-size:12px; font-weight:500; margin-bottom:2px;";
+    title.textContent = zone.nome;
+    const sub = document.createElement("div");
+    sub.style.cssText = "font-size:11px; color:var(--text-muted); margin-bottom:6px;";
+    sub.textContent = zone.nota;
+    const g = document.createElement("div");
+    g.style.cssText = "display:grid; grid-template-columns:repeat(auto-fill, minmax(38px, 1fr)); gap:6px;";
+    BERTHS.filter(b => b.zone === zone.key).forEach(b => {
+      const info = statusForDay(b.id, day);
+      const cell = document.createElement("div");
+      cell.id = "grid-cell-" + b.id;
+      cell.style.cssText = "aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:500; cursor:pointer; color:white; background:" + STATUS_COLOR[info.status];
+      cell.textContent = b.id;
+      cell.onclick = () => selectBerthPlanimetria(b.id, day);
+      g.appendChild(cell);
+    });
+    wrap.appendChild(title);
+    wrap.appendChild(sub);
+    wrap.appendChild(g);
+    zoneContainer.appendChild(wrap);
   });
-  document.querySelectorAll(".accept-btn, .reject-btn").forEach(btn => {
-    btn.onclick = () => {
-      richieste.splice(parseInt(btn.dataset.idx), 1);
-      renderRichieste();
-    };
+  BERTHS.forEach(b => {
+    const info = statusForDay(b.id, day);
+    map1Markers[b.id].setStyle({ fillColor: STATUS_COLOR[info.status] });
   });
 }
-renderRichieste();
+
+function selectBerthPlanimetria(berthId, day) {
+  day = day || 4;
+  const b = BERTHS.find(x => x.id === berthId);
+  const info = statusForDay(berthId, day);
+  const boatTxt = info.boat ? (" - " + info.boat + " (" + info.length + "m)") : "";
+  document.getElementById("berth-detail").innerHTML = "<strong style='color:var(--text-primary);'>Posto " + berthId + "</strong> - " + b.zoneNome + " - " + STATUS_LABEL[info.status] + boatTxt;
+}
+
+renderZoneGrid(4);
 </script>
 <script>
-const dayBookings = {
-  4: [{ name: "Wind Rose", status: "confermata" }],
-  5: [{ name: "Wind Rose", status: "confermata" }, { name: "Blue Marlin", status: "confermata" }],
-  6: [{ name: "Wind Rose", status: "confermata" }, { name: "Aurora", status: "richiesta" }],
-  7: [{ name: "Aurora", status: "richiesta" }, { name: "Nettuno", status: "confermata" }],
-  8: [{ name: "Aurora", status: "richiesta" }, { name: "Perla Nera", status: "richiesta" }],
-  9: [{ name: "Aurora", status: "richiesta" }, { name: "Perla Nera", status: "richiesta" }, { name: "Stella Marina", status: "richiesta" }],
-  10: [{ name: "Perla Nera", status: "richiesta" }, { name: "Onda Blu", status: "richiesta" }],
-  11: [{ name: "Onda Blu", status: "richiesta" }],
-  12: [{ name: "Onda Blu", status: "richiesta" }],
-  13: [{ name: "Onda Blu", status: "richiesta" }],
-};
-const dayStatusColor = { confermata: "#378ADD", richiesta: "#BA7517" };
 const weekdays = ["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"];
 const calWeekdaysEl = document.getElementById("cal-weekdays");
 weekdays.forEach(w => {
@@ -263,20 +250,58 @@ weekdays.forEach(w => {
 const firstWeekday = (new Date(2026, 6, 1).getDay() + 6) % 7;
 const daysInMonth = 31;
 const calGrid = document.getElementById("cal-grid");
+
+const map2 = L.map("cal-map", { zoomControl: false, attributionControl: true }).setView([36.7159, 14.8312], 18);
+L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+  maxZoom: 20,
+  attribution: "Esri, Maxar, Earthstar Geographics"
+}).addTo(map2);
+const map2Markers = {};
+BERTHS.forEach(b => {
+  const marker = L.circleMarker([b.lat, b.lng], { radius: 6, weight: 1, color: "#fff", fillOpacity: 1 }).addTo(map2);
+  map2Markers[b.id] = marker;
+  marker.bindTooltip(b.id, { permanent: false });
+});
+
+function renderPrenotazioniList() {
+  const el = document.getElementById("prenotazioni-list");
+  el.innerHTML = "";
+  CONFIRMED.forEach(c => {
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;";
+    const badgeBg = c.status === "attesa" ? "var(--bg-warning)" : "var(--bg-success)";
+    const badgeColor = c.status === "attesa" ? "var(--text-warning)" : "var(--text-success)";
+    const badgeText = c.status === "attesa" ? "In attesa acconto" : "Confermata";
+    const periodo = c.start === c.end ? (c.start + "-" + c.end + " luglio") : (c.start + "-" + c.end + " luglio");
+    row.innerHTML = "<div><p style='margin:0; font-size:14px; font-weight:500;'>" + c.boat + " · " + c.length + "m</p><p style='margin:0; font-size:12px; color:var(--text-secondary);'>Posto " + c.berth + " · " + periodo + "</p></div><span style='font-size:12px; background:" + badgeBg + "; color:" + badgeColor + "; padding:3px 10px; border-radius:var(--radius);'>" + badgeText + "</span>";
+    el.appendChild(row);
+  });
+}
+
 function showDayDetail(day) {
   document.querySelectorAll(".cal-cell").forEach(c => c.style.outline = "none");
   const cell = document.getElementById("cal-cell-" + day);
   if (cell) cell.style.outline = "2px solid var(--text-accent)";
   const detail = document.getElementById("cal-detail");
-  const items = dayBookings[day];
-  if (!items) {
+  const items = getDayBoats(day);
+  if (items.length === 0) {
     detail.innerHTML = "<strong>" + day + " luglio</strong> &middot; nessuna imbarcazione in porto.";
-    return;
+  } else {
+    detail.innerHTML = "<strong>" + day + " luglio</strong><br>" + items.map(it =>
+      "<span style='display:inline-flex; align-items:center; gap:4px; margin:6px 8px 0 0;'><i class='ti ti-sailboat' style='font-size:14px; color:" + (it.status === "confermata" ? STATUS_COLOR.occupato : STATUS_COLOR.richiesta) + ";'></i>" + it.name + " <span style='font-size:11px; color:var(--text-muted);'>(" + it.status + ")</span></span>"
+    ).join("");
   }
-  detail.innerHTML = "<strong>" + day + " luglio</strong><br>" + items.map(it =>
-    "<span style='display:inline-flex; align-items:center; gap:4px; margin:6px 8px 0 0;'><i class='ti ti-sailboat' style='font-size:14px; color:" + dayStatusColor[it.status] + ";'></i>" + it.name + " <span style='font-size:11px; color:var(--text-muted);'>(" + it.status + ")</span></span>"
-  ).join("");
+  const nonLibero = [];
+  BERTHS.forEach(b => {
+    const info = statusForDay(b.id, day);
+    map2Markers[b.id].setStyle({ fillColor: STATUS_COLOR[info.status] });
+    if (info.status !== "libero" && info.status !== "concessione") {
+      nonLibero.push(b.id + (info.boat ? " (" + info.boat + ")" : " (" + STATUS_LABEL[info.status] + ")"));
+    }
+  });
+  document.getElementById("cal-day-berths").innerHTML = nonLibero.length ? ("Posti non liberi il " + day + " luglio: " + nonLibero.join(", ")) : ("Tutti i posti gestiti dal porto sono liberi il " + day + " luglio.");
 }
+
 for (let i = 0; i < firstWeekday; i++) {
   const blank = document.createElement("div");
   calGrid.appendChild(blank);
@@ -286,20 +311,83 @@ for (let d = 1; d <= daysInMonth; d++) {
   cell.id = "cal-cell-" + d;
   cell.className = "cal-cell";
   cell.style.cssText = "border:0.5px solid var(--border); border-radius:6px; padding:4px; min-height:44px; cursor:pointer; font-size:12px;" + (d === 4 ? " background:var(--bg-accent);" : "");
-  const dots = (dayBookings[d] || []).slice(0, 3).map(it => "<span style='display:inline-block; width:6px; height:6px; border-radius:50%; background:" + dayStatusColor[it.status] + "; margin-right:2px;'></span>").join("");
+  const dayItems = getDayBoats(d);
+  const dots = dayItems.slice(0, 3).map(it => "<span style='display:inline-block; width:6px; height:6px; border-radius:50%; background:" + (it.status === "confermata" ? STATUS_COLOR.occupato : STATUS_COLOR.richiesta) + "; margin-right:2px;'></span>").join("");
   cell.innerHTML = "<div>" + d + "</div><div style='margin-top:4px;'>" + dots + "</div>";
   cell.onclick = () => showDayDetail(d);
   calGrid.appendChild(cell);
 }
+renderPrenotazioniList();
 showDayDetail(4);
+</script>
+<script>
+let currentDay = 4;
+const originalShowDayDetail = showDayDetail;
+showDayDetail = function (day) { currentDay = day; originalShowDayDetail(day); };
 
+function refreshAll() {
+  document.querySelectorAll("#cal-grid > div").forEach(c => c.remove());
+  for (let i = 0; i < firstWeekday; i++) { calGrid.appendChild(document.createElement("div")); }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement("div");
+    cell.id = "cal-cell-" + d;
+    cell.className = "cal-cell";
+    cell.style.cssText = "border:0.5px solid var(--border); border-radius:6px; padding:4px; min-height:44px; cursor:pointer; font-size:12px;" + (d === currentDay ? " background:var(--bg-accent);" : "");
+    const dayItems = getDayBoats(d);
+    const dots = dayItems.slice(0, 3).map(it => "<span style='display:inline-block; width:6px; height:6px; border-radius:50%; background:" + (it.status === "confermata" ? STATUS_COLOR.occupato : STATUS_COLOR.richiesta) + "; margin-right:2px;'></span>").join("");
+    cell.innerHTML = "<div>" + d + "</div><div style='margin-top:4px;'>" + dots + "</div>";
+    cell.onclick = () => showDayDetail(d);
+    calGrid.appendChild(cell);
+  }
+  renderPrenotazioniList();
+  showDayDetail(currentDay);
+  renderZoneGrid(4);
+}
+
+const richiesteListEl = document.getElementById("richieste-list");
+function renderRichieste() {
+  richiesteListEl.innerHTML = "";
+  document.getElementById("req-badge").textContent = PENDING.length;
+  if (PENDING.length === 0) {
+    richiesteListEl.innerHTML = "<p style='font-size:13px; color:var(--text-muted);'>Nessuna richiesta in sospeso.</p>";
+    return;
+  }
+  PENDING.forEach((r, idx) => {
+    const b = BERTHS.find(x => x.id === r.berth);
+    const periodo = r.start === r.end ? (r.start + " luglio") : (r.start + "-" + r.end + " luglio");
+    const row = document.createElement("div");
+    row.style.cssText = "display:flex; justify-content:space-between; align-items:center; border:0.5px solid var(--border); border-radius:var(--radius); padding:10px 12px;";
+    row.innerHTML = "<div><p style='margin:0; font-size:14px; font-weight:500;'>" + r.boat + " · " + r.length + "m</p><p style='margin:0; font-size:12px; color:var(--text-secondary);'>" + periodo + " · proposto " + r.berth + " (" + b.zoneNome + ")</p></div><div style='display:flex; gap:6px;'><button data-idx='" + idx + "' class='accept-btn' style='font-size:12px; padding:5px 10px;'>Accetta</button><button data-idx='" + idx + "' class='reject-btn' style='font-size:12px; padding:5px 10px;'>Rifiuta</button></div>";
+    richiesteListEl.appendChild(row);
+  });
+  document.querySelectorAll(".accept-btn").forEach(btn => {
+    btn.onclick = () => {
+      const r = PENDING[parseInt(btn.dataset.idx)];
+      CONFIRMED.push({ boat: r.boat, length: r.length, berth: r.berth, start: r.start, end: r.end, status: "occupato" });
+      PENDING.splice(parseInt(btn.dataset.idx), 1);
+      renderRichieste();
+      refreshAll();
+    };
+  });
+  document.querySelectorAll(".reject-btn").forEach(btn => {
+    btn.onclick = () => {
+      PENDING.splice(parseInt(btn.dataset.idx), 1);
+      renderRichieste();
+      refreshAll();
+    };
+  });
+}
+renderRichieste();
+</script>
+<script>
 document.querySelectorAll(".nav-btn").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".nav-btn").forEach(b => { b.style.background = "transparent"; b.style.color = "inherit"; });
     btn.style.background = "var(--bg-accent)"; btn.style.color = "var(--text-accent)";
     document.querySelectorAll('[id^="view-"]').forEach(v => v.style.display = "none");
     document.getElementById("view-" + btn.dataset.view).style.display = "block";
-    if (btn.dataset.view === "planimetria") { setTimeout(() => map.invalidateSize(), 50); }
+    if (btn.dataset.view === "planimetria") { setTimeout(() => map1.invalidateSize(), 50); }
+    if (btn.dataset.view === "prenotazioni") { setTimeout(() => map2.invalidateSize(), 50); }
   };
 });
 
